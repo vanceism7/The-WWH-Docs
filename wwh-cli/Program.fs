@@ -6,7 +6,9 @@ open WWH.Cli
 let main argv =
  
     try
-        ArgsParser.parseArgs argv |> CLI.RunCommand
+        ArgsParser.parseArgs argv 
+        |> CommandBuilder.createCommand
+        |> CLI.RunCommand
     with e ->
         eprintf "%s" e.Message
     

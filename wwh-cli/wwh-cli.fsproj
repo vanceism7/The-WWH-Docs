@@ -13,6 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgsParser.fs" />
+    <Compile Include="CommandBuilder.fs" />
     <Compile Include="CliRunner.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

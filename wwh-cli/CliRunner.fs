@@ -1,7 +1,7 @@
 namespace WWH.Cli
 
 module CLI = 
-    open ArgsParser
+    open CommandBuilder
     open WWH.Parsing
     open WWH.Markdown
 
@@ -9,24 +9,16 @@ module CLI =
     let getVersion() = 
         printf "WWH Doc Converter: Version 0.1"
 
-    let writeError e = 
-        printf "%s" e
+    let convertDoc file format = 
+        let sections = 
+            Parser.parseFile file |> SectionBuilder.build
+        
+        sections |> 
+        Convert.toMarkdown file 
+        |> (printf "%s")
 
-    let RunCommand (arg:ArgResult) = 
+    let RunCommand (arg:Command) = 
         match arg with
-        | Error e -> writeError e
-        | Action action ->
+        | VersionCmd -> getVersion()
+        | ConvertCmd (file,format) -> convertDoc file format
             
-            match action with
-            | Version -> getVersion()
-            | Convert args ->
-                let file = args.GetResult File
-                let format = args.GetResult To
-
-                let sections = 
-                    Parser.parseFile file
-                    |> SectionBuilder.build
-                
-                sections
-                |> Convert.toMarkdown file
-                |> (printf "%s")
