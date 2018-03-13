@@ -22,11 +22,11 @@ module Convert =
         | _ -> header + nl + a' + nl
 
     let formatSection (s:Section) = 
-        "### Section: " + s.Title.Trim() + nl +
+        "## Section: " + s.Title.Trim() + nl +
         formatArticle "### What: " s.What +
         formatArticle "### Why: " s.Why + 
         formatArticle "### How: " s.How + 
-        nl + "---" + nl + nl
+        nl + "---" + nl
         
     let sectionsToString = 
         List.map formatSection >> List.reduce (+)
