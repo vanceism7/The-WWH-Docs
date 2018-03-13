@@ -16,10 +16,10 @@ module Convert =
         >> List.fold (+) ""
 
     let formatArticle header a = 
-        let a' = articleToString a
+        let a' = (articleToString a).TrimStart( [|'\n'; '\r'|] ).Trim()
         match a' with
         | "" -> ""
-        | _ -> header + a' + nl
+        | _ -> header + nl + a' + nl
 
     let formatSection (s:Section) = 
         "### Section: " + s.Title.Trim() + nl +
