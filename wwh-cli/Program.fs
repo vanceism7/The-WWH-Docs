@@ -5,5 +5,9 @@ open WWH.Cli
 [<EntryPoint>]
 let main argv =
  
-    ArgsParser.parseArgs argv |> CLI.RunCommand
-    0 // return an integer exit code
+    try
+        ArgsParser.parseArgs argv |> CLI.RunCommand
+    with e ->
+        eprintf "%s" e.Message
+    
+    0
