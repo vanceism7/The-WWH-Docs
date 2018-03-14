@@ -55,14 +55,17 @@ module Parser =
         let articleEnd = 
             (eof |>> string) <|> anySectionStart
 
+        let readManyArticles = 
+            manyUntil readArticle articleEnd
+
         let whatArticle = 
-            attempt whatStart >>. manyUntil readArticle articleEnd
+            attempt whatStart >>. readManyArticles
 
         let whyArticle = 
-            attempt whyStart >>. manyUntil readArticle articleEnd
+            attempt whyStart >>. readManyArticles
 
         let howArticle = 
-            attempt howStart >>. manyUntil readArticle articleEnd
+            attempt howStart >>. readManyArticles
 
         let parseSection = 
             sectionTitle

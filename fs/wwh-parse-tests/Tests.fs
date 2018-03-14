@@ -13,13 +13,21 @@ type TestClass () =
         | Success (r,_,_) -> r
         | Failure (r,_,_) -> r
 
-    let unwrapText v = 
+    let unwrapParserText v = 
         match v with
         | Success (r,_,_) -> 
             match r with
             | WWH.Parsing.Types.Text r' -> r' |> string
             | WWH.Parsing.Types.Ref r' -> r' |> string
         | Failure (r,_,_) -> r
+
+    let unwrapText v = 
+        match v with
+            | WWH.Parsing.Types.Text r' -> r' |> string
+            | WWH.Parsing.Types.Ref r' -> r' |> string
+
+    let textListToString = 
+        List.map unwrapText >> List.reduce (+)
 
     let isSuccess v = 
         match v with
@@ -134,7 +142,7 @@ type TestClass () =
     [<DataRow("&Link With \\& symbol in it&")>]
     [<TestMethod>]
     member this.ReadRefLinkTest text =
-        let result = testParser readRefLink text |> unwrapText
+        let result = testParser readRefLink text |> unwrapParserText
         let expected = text.Trim( '&' ).Replace( "\\&", "&" )
         Assert.AreEqual( expected, result )
 
@@ -145,7 +153,54 @@ type TestClass () =
     [<DataRow("\nWhy:")>]
     [<DataRow("\nHow:")>]
     [<TestMethod>]
-    member this.textEndTest text =
+    member this.TextEndTest text =
         let result = testParser textEnd text
         Assert.IsTrue( isSuccess result )
 
+    [<DataRow("Some plain text to the end\nSection:New Stuff","Some plain text to the end" )>]
+    [<DataRow("Heres some test with a &Reference&", "Heres some test with a ")>]
+    [<DataRow("More test stuff \nWhy:", "More test stuff ")>]
+    [<DataRow("Plain text with an \\& in it\nHow:", "Plain text with an & in it")>]
+    [<DataRow("Plain text with eof as ending", "Plain text with eof as ending")>]
+    [<TestMethod>]
+    member this.ReadPlainTextTest text (expected:string) =
+        let result = testParser readPlainText text |> unwrapParserText
+        Assert.AreEqual( expected, result )
+
+    [<DataRow("")>]
+    [<DataRow("\nSection:")>]
+    [<DataRow("\nWhat:")>]
+    [<DataRow("\nWhy:")>]
+    [<DataRow("\nHow:")>]
+    [<TestMethod>]
+    member this.IsArticleEndTest text =
+        let result = testParser articleEnd text
+        Assert.IsTrue( isSuccess result )
+
+    [<DataRow("&")>]
+    [<DataRow("\nSection :")>]
+    [<TestMethod>]
+    member this.NotArticleEndTest text =
+        let result = testParser articleEnd text
+        Assert.IsFalse( isSuccess result )
+
+    [<DataRow("This is a what article test\nWhy:","This is a what article test" )>]
+    [<DataRow("This is a test why\nHow:", "This is a test why")>]
+    [<DataRow("Test how with &Reference&", "Test how with Reference")>]
+    [<TestMethod>]
+    member this.XArticleTestPass text (expected: String) =
+        let result = testParser readManyArticles text
+
+        match result with
+        | Success (a,_,_) -> Assert.AreEqual( expected, textListToString a )
+        | _ -> Assert.Fail()
+
+    [<DataRow("This is &Incomplete Reference")>]
+    [<DataRow("This is a dangling \\ escape")>]
+    [<TestMethod>]
+    member this.XArticleTestFail text =
+        let result = testParser readManyArticles text
+
+        match result with
+        | Success (_) -> Assert.Fail()//Assert.AreEqual( expected, textListToString a )
+        | _ -> ()
