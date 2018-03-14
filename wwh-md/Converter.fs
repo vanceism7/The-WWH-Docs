@@ -22,7 +22,7 @@ module Convert =
         | _ -> header + nl + a' + nl
 
     let formatSection (s:Section) = 
-        "## Section: " + s.Title.Trim() + nl +
+        "## " + s.Title.Trim() + nl +
         formatArticle "### What: " s.What +
         formatArticle "### Why: " s.Why + 
         formatArticle "### How: " s.How + 
@@ -35,7 +35,7 @@ module Convert =
         let createLink (s:string) =
             let s' = s.Trim()
             let link = s'.Replace( " ", "-" ).ToLower()
-            (sprintf "[%s]:(%s#%s)" s' fn link) + nl 
+            (sprintf "[%s]:%s#%s" s' fn link) + nl 
         
         List.map createLink >> List.reduce (+)
 
