@@ -1,0 +1,78 @@
+Section: Fake
+What: FAKE is a cross platform build automation system written in f#
+
+Why: 
+Fake brings the power of f#, functional programming, the .Net eco-system, syntax highlighting, and debugging to build scripting
+
+How: 
+Fake scripts are just f# scripts (fsx), which derive their functionality from modules. Every fake script will have a header which loads your desired modules into scope. Here's a starting example which loads the Target Module: 
+```
+#r "paket:
+nuget Fake.Core.Target //"
+#load "./.fake/build.fsx/intellisense.fsx"
+
+open Fake.Core
+```
+Any modules you wish to use must be referenced in the `#r "packet:"` list. I.e: to add FileSystem support:
+```
+#r "paket:
+nuget Fake.Core.Target 
+nuget Fake.IO.FileSystem //"
+```
+Fake has the following syntax available:
+`open Module`  - The standard f# statement for loading f# libs
+`let MyVar = "value"` - Fake uses standard f# let bindings for binding values/variables
+`Module.Function( args )` - Calls a modules function, where `Module` is any f#/fake module
+`Module.Value` - Calls a modules values, where `Module` is any f#/fake module
+
+For example, to create targets "Clean" and "Default", you would do the following:
+```
+Target.Create "Clean" (fun _ ->
+  Shell.CleanDir buildDir
+)
+
+Target.Create "Default" (fun _ ->
+  Trace.trace "Hello World from FAKE"
+)
+```
+To see the list of parameters for your module's functions, see fake's [Api Reference](http://fake.build/apidocs/index.html)
+
+Also, as a last aside note, fake creates dependencies between targets using the syntax:
+```
+"Clean" 
+	==> "Build"
+	==> "Deploy" 
+```
+This syntax may at first seem strange, but `==>` is just an infix function, meaning it can be used as in an operator-like fashion, similar to `+` or `-`.
+
+The various modules of fake are grouped into the following categories:
+1. &Core& - These are the modules most commonly used in fake scripts
+2. &IO& - Modules for IO with the file system
+3. &DotNet& - These modules allow basic interfacing with standard dotnet tools such as msbuild, nunit, nuget, etc
+4.  &Net& - Web Modules
+5. &Tools& - Modules for working with git
+6. &Windows& - Modules for work specifically with windows os
+7. &Testing& - Currently only has SonarCube, which is a code quality reviewer
+
+
+Section: Core
+What: 
+The Core modules are the modules which supply the most commonly used functionality to the fake system. These are the modules you will want to most familiarize yourself with first.
+
+How:
+The modules belonging to Core are listed below. Each of these modules will have their own sections describing how they work. 
+
+1. &Targets& -  Targets are the various actions which your build script can execute
+2. &Globbing& - Operators for matching file names?
+3. &Environment& - Allows you to read system information, set environment variables, etc
+4. &Process& - Contains functions which can be used to start other tools.
+5. &String& - Contains basic functions for string manipulation.
+6. &Buildserver& - Contains functions which allow build scripts to interact with a build server.
+7. &Tracing& - This module contains function which allow to trace build output
+8. &Context& - This module tracks the context of the build, allowing the context to dictate the behavior of modules.
+9. &Xml& - Contains functions to read and write XML files.
+10. &Tasks& - Contains a helper which can be used to implement timeouts and retries.
+
+
+Section: Targets
+What: Blank
