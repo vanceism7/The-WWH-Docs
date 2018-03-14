@@ -21,4 +21,3 @@ module CLI =
         match arg with
         | VersionCmd -> getVersion()
         | ConvertCmd (file,format) -> convertDoc file format
-            

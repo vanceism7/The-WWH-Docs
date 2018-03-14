@@ -5,41 +5,49 @@ module Parser =
     open Types
 
     let private parseDoc = 
-    
+
         let charListToString (x:char list) = 
             System.String.Concat( List.toArray x )  
 
         let betweenStr str = between (pstring str) (pstring str)
+        let startWith str = many1 newline >>. pstring str
 
-        let sectionStart = regex "^Section:"
-        let whatStart = regex "^What:"
-        let whyStart = regex "^Why:"
-        let howStart = regex "^How:"
+        let manyUntil p endp = 
+            many( notFollowedBy endp >>. p )
+
+        let sectionStart = startWith "Section:"
+        let whatStart = startWith "What:"
+        let whyStart = startWith "Why:"
+        let howStart = startWith "How:"
 
         let anySectionStart = 
             attempt sectionStart
             <|> attempt whatStart
             <|> attempt whyStart
-            <|> attempt howStart    
+            <|> attempt howStart
 
         let sectionTitle: Parser<string,unit> = 
-            sectionStart >>. restOfLine true
+            sectionStart >>. restOfLine false
 
-        let manyUntil p endp = 
-            many( notFollowedBy endp >>. p )
+        let escape = pstring "\\"
+        let amp = pstring "&"
+
+        let anyText = 
+            let escapeText = (escape >>. (amp <|> escape)) 
+            escapeText <|> anyString 1
 
         let readRefLink = 
-            pstring "&" 
-            >>. (manyTill anyChar (pstring "&"))
-            |>> charListToString
+            amp 
+            >>. (manyTill anyText amp)
+            |>> List.reduce (+)
             |>> Ref
 
         let textEnd = 
-            (eof |>> string) <|> (pstring "&") <|> anySectionStart
+            (eof |>> string) <|> amp <|> anySectionStart
 
         let readPlainText = 
-            manyUntil anyChar textEnd
-            |>> charListToString
+            manyUntil anyText textEnd
+            |>> List.reduce (+)
             |>> Text
 
         let readArticle =
@@ -49,22 +57,20 @@ module Parser =
             (eof |>> string) <|> anySectionStart
 
         let whatArticle = 
-            whatStart >>. manyUntil readArticle articleEnd
+            attempt whatStart >>. manyUntil readArticle articleEnd
 
         let whyArticle = 
-            whyStart >>. manyUntil readArticle articleEnd
+            attempt whyStart >>. manyUntil readArticle articleEnd
 
         let howArticle = 
-            howStart >>. manyUntil readArticle articleEnd
-
-        let tryOrDefault p d = 
-            attempt p <|> d
+            attempt howStart >>. manyUntil readArticle articleEnd
 
         let parseSection = 
             sectionTitle
             .>>. whatArticle
-            .>>. tryOrDefault whyArticle ( preturn List.empty )
-            .>>. tryOrDefault howArticle ( preturn List.empty )
+            .>>. (whyArticle <|>% List.empty )
+            .>>. (howArticle <|>% List.empty )
+            
 
         many parseSection .>> eof 
 
