@@ -4,13 +4,12 @@ module Parser =
     open FParsec
     open Types
 
-    let private parseDoc = 
-
+    module Internals = 
         let charListToString (x:char list) = 
             System.String.Concat( List.toArray x )  
 
         let betweenStr str = between (pstring str) (pstring str)
-        let startWith str = many1 newline >>. pstring str
+        let startWith str = newline >>. pstring str
 
         let manyUntil p endp = 
             many( notFollowedBy endp >>. p )
@@ -70,16 +69,20 @@ module Parser =
             .>>. whatArticle
             .>>. (whyArticle <|>% List.empty )
             .>>. (howArticle <|>% List.empty )
-            
 
-        many parseSection .>> eof 
+        let parseDoc = 
+            many parseSection .>> eof 
+
+
+        //For Testing
+        let testParser p str = run p str
 
     let parseString str = 
-        match run parseDoc str with
+        match run Internals.parseDoc str with
         | Success(result, _, _)   -> result
         | Failure(errorMsg, _, _) -> failwith errorMsg
 
-    let parseFile filename = 
-        match runParserOnFile parseDoc () filename System.Text.Encoding.Default with
+    let parseFile filename =
+        match runParserOnFile Internals.parseDoc () filename System.Text.Encoding.Default with
         | Success (result, _, _) -> result
         | Failure(errorMsg, _, _) -> failwith errorMsg
