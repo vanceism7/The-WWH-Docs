@@ -9,6 +9,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "wwh-parse", "wwh-parse\wwh-
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "wwh-md", "wwh-md\wwh-md.fsproj", "{0A80994A-08DD-4113-9353-B8ECF4906270}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "wwh-parse-tests", "wwh-parse-tests\wwh-parse-tests.fsproj", "{8F4144D8-E5BC-4D52-943F-B8DD190A161B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{0A80994A-08DD-4113-9353-B8ECF4906270}.Release|x64.Build.0 = Release|x64
 		{0A80994A-08DD-4113-9353-B8ECF4906270}.Release|x86.ActiveCfg = Release|x86
 		{0A80994A-08DD-4113-9353-B8ECF4906270}.Release|x86.Build.0 = Release|x86
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Debug|x64.ActiveCfg = Debug|x64
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Debug|x64.Build.0 = Debug|x64
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Debug|x86.ActiveCfg = Debug|x86
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Debug|x86.Build.0 = Debug|x86
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Release|x64.ActiveCfg = Release|x64
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Release|x64.Build.0 = Release|x64
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Release|x86.ActiveCfg = Release|x86
+		{8F4144D8-E5BC-4D52-943F-B8DD190A161B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal
