@@ -91,10 +91,10 @@ Lastly, `Section:` and `What:` are required for each section. `How:` and `Why:` 
 \&Section Name\&
 \&Click Here:Section Name\&
 ```
--- Any text found between a pair of ampersands `\&` will be interpreted as a reference to another section within the document. It also allows a display:link reference style such as that found in markdown. 
-I.e: 
-&WWH Converter& -- Here's a reference back to the beginning of this section
-&WWH& -- Here's a reference to the first section of the document
+-- Any text found between a pair of ampersands `\&` will be interpreted as a reference to another section within the document. It also allows a display:link reference style such as that found in markdown.  
+I.e:  
+&WWH Converter& -- Here's a reference back to the beginning of this section  
+&WWH& -- Here's a reference to the first section of the document  
 
 The actual "\&" symbol can be added in using the standard "\\\\" escape symbol  
 

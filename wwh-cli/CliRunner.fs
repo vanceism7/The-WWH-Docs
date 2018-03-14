@@ -13,8 +13,10 @@ module CLI =
         let sections = 
             Parser.parseFile file |> SectionBuilder.build
         
+        let fn = "./" + System.IO.Path.GetFileName( file )
+
         sections |> 
-        Convert.toMarkdown file 
+        Convert.toMarkdown fn 
         |> (printf "%s")
 
     let RunCommand (arg:Command) = 

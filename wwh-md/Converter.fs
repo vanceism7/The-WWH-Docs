@@ -34,13 +34,13 @@ module Convert =
     let createLinks fn =
         let createLink (s:string) =
             let s' = s.Trim()
-            let link = s'.Replace( " ", "-" )
-            (sprintf "[%s]:(%s/%s)" s' fn link) + nl 
+            let link = s'.Replace( " ", "-" ).ToLower()
+            (sprintf "[%s]:(%s#%s)" s' fn link) + nl 
         
         List.map createLink >> List.reduce (+)
 
     let createTblEntries = 
-        let createEntry (s:string) = (sprintf "[%s]" (s.Trim())) + nl
+        let createEntry (s:string) = (sprintf "[%s]" (s.Trim())) + "  " + nl
         List.map createEntry >> List.reduce (+)
 
     let getTableOfContents fn (doc:Section List) = 
