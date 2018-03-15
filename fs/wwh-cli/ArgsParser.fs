@@ -4,19 +4,22 @@ module ArgsParser =
     open Argu
 
     type ConvertAct = 
-        | [<CustomCommandLineAttribute("File", "file", "-f")>]
-            File of file:string
-        | [<CustomCommandLineAttribute("To", "to", "-t")>]
-            To of format:string
+        | [<Mandatory>][<Unique>][<CustomCommandLineAttribute("File", "file", "-f")>]
+            File of string
+        | [<Mandatory>][<Unique>][<CustomCommandLineAttribute("To", "to", "-t")>]
+            To of string
+        | [<Unique>][<AltCommandLine("-l")>]
+            Link of string
     with
         interface IArgParserTemplate with
             member s.Usage = 
                 match s with
                 | File _ -> "specify the file to be converted"
-                | To _ -> "specify the format to convert the file to"     
+                | To _ -> "specify the format to convert the file to"
+                | Link _ -> "sets the link for document references"
 
     type ArgActions = 
-        | [<CustomCommandLineAttribute("Convert", "convert", "-c")>] 
+        | [<Unique>][<First>][<CustomCommandLineAttribute("Convert", "convert", "-c")>] 
             Convert of ParseResults<ConvertAct>
         | Version
     with 
