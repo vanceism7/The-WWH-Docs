@@ -32,7 +32,7 @@ module Parser =
         let amp = pstring "&"
 
         let anyText = 
-            let escapeText = (escape >>. (amp <|> escape)) 
+            let escapeText = attempt (escape >>. amp) 
             escapeText <|> anyString 1
 
         let readRefLink = 
