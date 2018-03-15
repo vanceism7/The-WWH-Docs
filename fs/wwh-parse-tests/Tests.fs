@@ -204,3 +204,22 @@ type TestClass () =
         match result with
         | Success (_) -> Assert.Fail()//Assert.AreEqual( expected, textListToString a )
         | _ -> ()
+
+    [<DataRow("\nSection: Test1\nWhat:Test\nWhy:Test\nHow:Test")>]
+    [<DataRow("\nSection: Test2\nWhat:Test\nWhy:How Optional")>]
+    [<DataRow("\nSection: Test3\nWhat:Test\nHow:Why Optional")>]
+    [<DataRow("\nSection: Test4\nWhat:How and Why Optional")>]
+    [<TestMethod>]
+    member this.ParseDocPass text =
+        let result = testParser parseSection text
+        Assert.IsTrue( isSuccess result )
+
+    [<DataRow("\nSection: What Not Optional")>]
+    [<DataRow("\nSection: Test2\nWhy:What not Optional")>]
+    [<DataRow("\nSection: Test3\nWhy:Out of order invalid\nWhat:Test")>]
+    [<DataRow("\nSection: Test4\nWhat:Test\nHow:Out of order invalid\nWhy:Test")>]
+    [<TestMethod>]
+    member this.ParseDocFails text =
+        let result = testParser parseDoc text
+        printf "%A" result
+        Assert.IsFalse( isSuccess result )    

@@ -76,7 +76,6 @@ module Parser =
         let parseDoc = 
             many parseSection .>> eof 
 
-
         //For Testing
         let testParser p str = run p str
 
