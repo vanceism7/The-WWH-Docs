@@ -18,7 +18,7 @@ module mdTest =
             let result = 
                 Parser.parseString ("\n" + test)
                 |> SectionBuilder.build
-                |> Convert.toMarkdown "./test.md"
+                |> Convert.toMarkdown
                 
             printf "%s" result
             ()

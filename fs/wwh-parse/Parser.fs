@@ -67,6 +67,11 @@ module Parser =
         let howArticle = 
             attempt howStart >>. readManyArticles
 
+        let header: Parser<string*string,unit> = 
+            let title = pstring "Title:" >>. restOfLine false
+            let author = startWith "Author:" >>. restOfLine false
+            title .>>. author
+
         let parseSection = 
             sectionTitle
             .>>. whatArticle

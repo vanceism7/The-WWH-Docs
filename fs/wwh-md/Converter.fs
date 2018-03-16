@@ -31,11 +31,11 @@ module Convert =
     let sectionsToString = 
         List.map formatSection >> List.reduce (+)
 
-    let createLinks fn =
+    let createLinks =
         let createLink (s:string) =
             let s' = s.Trim()
             let link = s'.Replace( " ", "-" ).ToLower()
-            (sprintf "[%s]:%s#%s" s' fn link) + nl 
+            (sprintf "[%s]:#%s" s' link) + nl 
         
         List.map createLink >> List.reduce (+)
 
@@ -43,9 +43,9 @@ module Convert =
         let createEntry (s:string) = (sprintf "[%s]" (s.Trim())) + "  " + nl
         List.map createEntry >> List.reduce (+)
 
-    let getTableOfContents fn (doc:Section List) = 
+    let getTableOfContents (doc:Section List) = 
         let titles = List.map (fun x -> x.Title) doc
-        let links = createLinks fn titles
+        let links = createLinks titles
         let result = createTblEntries titles
         
         links + nl + 
@@ -53,6 +53,6 @@ module Convert =
         result + nl
 
     //--Main Converter Function--//
-    let toMarkdown fn (doc:Section List) = 
-        getTableOfContents fn doc + 
+    let toMarkdown (doc:Section List) = 
+        getTableOfContents doc + 
         sectionsToString doc

@@ -8,15 +8,12 @@ module ArgsParser =
             File of string
         | [<Mandatory>][<Unique>][<CustomCommandLineAttribute("To", "to", "-t")>]
             To of string
-        | [<Unique>][<AltCommandLine("-l")>]
-            Link of string
     with
         interface IArgParserTemplate with
             member s.Usage = 
                 match s with
                 | File _ -> "specify the file to be converted"
                 | To _ -> "specify the format to convert the file to"
-                | Link _ -> "sets the link for document references"
 
     type ArgActions = 
         | [<Unique>][<First>][<CustomCommandLineAttribute("Convert", "convert", "-c")>] 

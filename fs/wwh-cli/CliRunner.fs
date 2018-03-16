@@ -9,17 +9,15 @@ module CLI =
     let getVersion() = 
         printf "WWH Doc Converter: Version 0.1"
 
-    let convertDoc file format link = 
+    let convertDoc file format = 
         let sections = 
             Parser.parseFile file |> SectionBuilder.build
         
-        let fn = Option.defaultValue ("./" + (System.IO.Path.GetFileName( file ))) link
-
         sections |> 
-        Convert.toMarkdown fn 
+        Convert.toMarkdown
         |> (printf "%s")
 
     let RunCommand (arg:Command) = 
         match arg with
         | VersionCmd -> getVersion()
-        | ConvertCmd (file,format,link) -> convertDoc file format link
+        | ConvertCmd (file,format) -> convertDoc file format
