@@ -9,7 +9,7 @@ module Types =
 
     type Text = 
         | Text of string
-        | Ref of string
+        | Ref of display:string * link:string
 
     type Article = Text List
 

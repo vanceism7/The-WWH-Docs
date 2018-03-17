@@ -9,7 +9,11 @@ module Convert =
     let textToString t = 
         match t with 
         | Text s -> s
-        | Ref s -> sprintf "[%s]" (s.Trim())
+        | Ref (display,link) -> 
+            match display.Length,link.Length with
+            | 0,0 -> failwith "Invalid Link"
+            | 0,_ -> sprintf "[%s]" (link.Trim())
+            | _,_ -> sprintf "[%s][%s]" display (link.Trim())
 
     let articleToString = 
         List.map textToString 

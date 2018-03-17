@@ -30,15 +30,23 @@ module Parser =
 
         let escape = pstring "\\"
         let amp = pstring "&"
+        let colon = pstring ":"
 
         let anyText = 
-            let escapeText = attempt (escape >>. amp) 
+            let escapeText = attempt (escape >>. (amp <|> colon)) 
             escapeText <|> anyString 1
 
         let readRefLink = 
+            let dispEnd = (amp >>. fail "Not a display reference") <|> colon
+            let display = manyTill anyText dispEnd
+            let link = manyTill anyText amp
+
+            let displayLink = display .>>. link
+            let stdLink = link |>> (fun x -> ([""],x) )
+
             amp 
-            >>. (manyTill anyText amp)
-            |>> List.reduce (+)
+            >>. (attempt displayLink <|> stdLink)
+            |>> fun (x,y) -> (List.reduce (+) x, List.reduce(+) y)
             |>> Ref
 
         let textEnd = 
