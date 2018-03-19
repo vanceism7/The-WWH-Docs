@@ -1,0 +1,587 @@
+
+Section: DocBooks
+What:
+Doc books are a sort of universal format for drafting ebooks. It is basically the html of ebooks, its written in xml.
+
+Why:
+DocBooks provide a way to draft ebooks which can be converted to multiple formats without the need to change the code. Formats it can convert to include: html, epub, markdown, pdf, and more
+
+How:
+DocBooks start off with the standard xml header followed by either it's contents contained within a &Book:Books&, or collection of &Books&, called a &Set:Sets&.
+
+Which ever element you choose to be the root, must reference the Docbooks namespace as seen above with the following xmlns assignment: `xmlns="http://docbook.org/ns/docbook"`
+
+e.g: A single &book:Books& Docbook
+```
+<book xml:id="simple_book" xmlns="http://docbook.org/ns/docbook" version="5.0">
+	<!-- Book content goes here -->
+</book>
+```
+
+or a &set:Sets& of books
+```
+<set xmlns='http://docbook.org/ns/docbook'>
+	<book xml:id="Book 1 of series">
+		...
+	</book>
+	<book xml:id="Sequal to Book 1">
+		...
+	</book>
+</set>
+```
+To see in more detail how sets and books work, see &Sets& and &Books&.
+Alternatively, DocBooks can also be a collection of topics, called an &Assembly&
+
+Most of the entries within DocBooks can have information attached to them. This is done through the use of the `<info>` tag. See &Meta information& for more details.
+
+Within your book, there are several elements provided by Docbook for displaying your books content. This is done through the use of two categories of display elements:
+1. &Block elements& and 
+2. &Inline elements&
+
+Lastly, DocBooks can be organized in two ways:
+1. They can have their entire contents within a single xml file, or 
+2. They can be split up between multiple files. See &Splitting Files& for more info on dividing up your books content
+
+
+Section: Splitting Files
+What: 
+DocBooks can be split up into multiple files -- A main layout file which declares the order of the book with references to other files, and the other files which make up the content of the book.
+
+Why:
+Splitting up files is recommended for larger writings.
+
+How:
+The layout file of the docbook begins with a *header* and then declares the layout of the book. 
+
+Files can be referenced using *XInclude*, which requires a declaration within the book header, or using a DTD declaration. DocBook is moving away from the DTD style and recommends using *XInclude*
+
+An Example docbook layout file using DTD
+```
+<!DOCTYPE book [
+<!ENTITY chap1 SYSTEM "chap1.xml">
+<!ENTITY chap2 SYSTEM "chap2.xml">
+<!ENTITY chap3 SYSTEM "chap3.xml">
+<!ENTITY appa SYSTEM "appa.xml">
+<!ENTITY appb SYSTEM "appb.xml">
+]>
+<book xmlns="http://docbook.org/ns/docbook" version="5.0">
+	<title>My First Book</title>
+	\&chap1;
+	\&chap2;
+	\&chap3;
+	\&appa;
+	\&appb;
+</book>
+```
+ 
+An example docbook layout file using *XInclude*:
+```
+<book xmlns="http://docbook.org/ns/docbook"
+      xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0">
+	<title>My First Book</title>
+	<xi:include href="chap1.xml"/>
+	<xi:include href="chap2.xml"/>
+	<xi:include href="chap3.xml"/>
+	<xi:include href="appa.xml"/>
+	<xi:include href="appb.xml"/>
+</book>
+```
+
+For info on creating the other files referenced here, see the children listed in the how section of &DocBooks&
+
+
+Section: Sets
+What:
+The `<set>` element is the highest top-level element in a docbook.
+It can contain 2 or more &Books&, or nested *sets* 
+A set can also hold &Meta Information& describing what it is, such as a title, author etc.
+  
+Why:
+They are used when you want your docbook to hold a collection of books rather than just one
+
+How:
+Sets are created using the `<set>` tag. They can contain multiple &Books& as well as the `<title>` tag and &Meta Information&. See https://tdg.docbook.org/tdg/5.1/set.html for more info
+
+An example of a *set* entry
+```
+<set xmlns='http://docbook.org/ns/docbook'>
+	<title>The Perl Series</title>
+	<info>
+	  <author>
+	    <orgname>O'Reilly Media</orgname>
+	  </author>
+	</info>
+
+	<book><title>Learning Perl</title>
+		<chapter><title>...</title><para>...</para></chapter>
+	</book>
+
+	<book><title>Programming Perl</title>
+		<chapter><title>...</title><para>...</para></chapter>
+	</book>
+
+	<book><title>Advanced Perl Programming</title>
+		<chapter><title>...</title><para>...</para></chapter>
+	</book>
+</set>
+```
+
+Section: Books
+What:
+Books are a top-level element, second only to &Sets&. Books are the primary container for all the main content of your writing. 
+If not contained within a set, there can only be one `<book>` within your docbook
+
+Books can contain &Meta Information& describing its title, author, etc.
+
+How:
+Books are made up of a few different components.
+
+1. &Dedications& -- Usually appearing at the beginning of the book
+2. &Navigation Components& -- Things like Table of Contents, indexes, etc
+3. &Components& -- These are the various major grouping elements which will categorize the content of the book, such as * prefaces, chapters, appendices, etc*
+
+Books can be divided into multiple parts using &Divisions& 
+For a full list of components a book can contain, see https://tdg.docbook.org/tdg/5.1/book.html
+
+An example of a book entry with different components
+```
+<book>
+<info>
+  <title>My First Book</title>
+  <author>
+    <personname><firstname>Jane</firstname><surname>Doe</surname></personname>
+  </author>
+  <copyright><year>2010</year><holder>Jane Doe</holder></copyright>
+</info>
+<preface><title>Foreword</title> ... </preface>
+<chapter> ... </chapter>
+<chapter> ... </chapter>
+<chapter> ... </chapter>
+<appendix> ... </appendix>
+<appendix> ... </appendix>
+<index> ... </index>
+</book>
+```
+
+
+Section: Components
+What:
+Components are the major containers for your books content
+
+How:
+The following elements are different types of components
+
+1. &Preface&
+2. &Chapter&
+3. &Appendix&
+4. &Glossary&
+5. &Bibliography&
+6. &Article&
+
+In addition to these, components can be divided up using &Sections&
+
+Section: Sections
+What:
+Sections are used to divide components into smaller pieces
+
+How:
+Sections are essentially just container tags with a title to name that specific section:
+e.g: A Chapter with two sections
+```
+<chapter><title>My Chapter</title>
+  <para> ... </para>
+  <section><title>First Section</title>
+    <para> ... </para>
+    <example> ... </example>
+  </section>
+  <section><title>Second Section</title>
+	 <para> ... </para>
+  </section>
+</chapter>
+```
+  
+  
+There are different types of sections available for splitting up your components.
+[`sect1`](https://tdg.docbook.org/tdg/5.1/sect1.html),  [`sect2`](https://tdg.docbook.org/tdg/5.1/sect2.html),  [`sect3`](https://tdg.docbook.org/tdg/5.1/sect3.html),  [`sect4`](https://tdg.docbook.org/tdg/5.1/sect4.html),  [`sect5`](https://tdg.docbook.org/tdg/5.1/sect5.html) -- The  [`sect1`](https://tdg.docbook.org/tdg/5.1/sect1.html)…[`sect5`](https://tdg.docbook.org/tdg/5.1/sect5.html)  elements are sectioning elements. They can occur in most  component-level  elements. These numbered section elements must be properly nested ([`sect2`](https://tdg.docbook.org/tdg/5.1/sect2.html)s can only occur inside[`sect1`](https://tdg.docbook.org/tdg/5.1/sect1.html)s,  [`sect3`](https://tdg.docbook.org/tdg/5.1/sect3.html)s can only occur inside  [`sect2`](https://tdg.docbook.org/tdg/5.1/sect2.html)s, and so on). There are five levels of numbered sections.
+
+[`section`](https://tdg.docbook.org/tdg/5.1/section.html) -- The  [`section`](https://tdg.docbook.org/tdg/5.1/section.html)  element is an alternative to numbered sections. The  [`section`](https://tdg.docbook.org/tdg/5.1/section.html)  element is recursive, meaning that you can nest it to any depth desired.
+
+[`simplesect`](https://tdg.docbook.org/tdg/5.1/simplesect.html) -- In addition to numbered sections, there is the  [`simplesect`](https://tdg.docbook.org/tdg/5.1/simplesect.html)  element. It is a terminal section that can occur at any level, but it cannot have any other sectioning element nested within it. A distinguishing feature of  [`simplesect`](https://tdg.docbook.org/tdg/5.1/simplesect.html)  is that it does not occur in the Table of Contents.
+
+[`bridgehead`](https://tdg.docbook.org/tdg/5.1/bridgehead.html) -- A  [`bridgehead`](https://tdg.docbook.org/tdg/5.1/bridgehead.html)  provides a section title without any containing section.
+
+[`refsect1`](https://tdg.docbook.org/tdg/5.1/refsect1.html)…[`refsect3`](https://tdg.docbook.org/tdg/5.1/refsect3.html) -- These elements, which occur only in  [`refentry`](https://tdg.docbook.org/tdg/5.1/refentry.html)s, are analogous to the numbered section elements in components. There are only three levels of numbered section elements in a  [`refentry`](https://tdg.docbook.org/tdg/5.1/refentry.html).
+
+[`refsection`](https://tdg.docbook.org/tdg/5.1/refsection.html) -- The  [`refsection`](https://tdg.docbook.org/tdg/5.1/refsection.html)  element is a recursive division in a  [`refentry`](https://tdg.docbook.org/tdg/5.1/refentry.html). It is an alternative to the numbered reference section tags ([`refsect1`](https://tdg.docbook.org/tdg/5.1/refsect1.html)…[`refsect3`](https://tdg.docbook.org/tdg/5.1/refsect3.html)). Like the  [`section`](https://tdg.docbook.org/tdg/5.1/section.html)  element, the  [`refsection`](https://tdg.docbook.org/tdg/5.1/refsection.html)  element is recursive.
+
+[`glossdiv`](https://tdg.docbook.org/tdg/5.1/glossdiv.html),  [`bibliodiv`](https://tdg.docbook.org/tdg/5.1/bibliodiv.html), and  [`indexdiv`](https://tdg.docbook.org/tdg/5.1/indexdiv.html) -- The  [`glossary`](https://tdg.docbook.org/tdg/5.1/glossary.html),  [`bibliography`](https://tdg.docbook.org/tdg/5.1/bibliography.html), and  [`index`](https://tdg.docbook.org/tdg/5.1/index-db.html)  elements can be broken into top-level  divisions, but not sections. Unlike sections, these elements do not nest.
+
+
+Section: Meta Information
+What:
+Meta Information is used to describe information about elements such as &Sets&, &Books&, etc. All elements at or above the &Section:Sections& level and more can contain Meta Information.
+
+Meta Information contains info about its section such as title, author/author groups, legal information, etc.
+
+How:
+Meta Information is declared using the `<info>` tag
+For a full listing of elements that can be used, see https://tdg.docbook.org/tdg/5.1/info.html
+
+
+Section: Divisions
+What:
+
+
+Section: Block elements
+What:
+Block elements are the various containers used for displaying the content of your book.
+
+How:
+The following are different types of block-elements. 
+
+1. &Paragraphs&
+2. &Lists& 
+3. &Admonitions&
+4. &Line-specific environments&
+5. &Examples, figures, and tables&
+6. &Equations&
+7. &Graphics and media&
+8. &Questions and answers&
+9. &Procedures and tasks&
+10. &Synopses&
+11. &Miscellaneous block elements&
+
+
+
+Section: Paragraphs
+What:
+Paragraphs are &Block elements& used to insert text into most higher level elements. Paragraphs can also contain other &Block elements& elements within them
+
+How:
+There are three paragraph elements: 
+[`para`](https://tdg.docbook.org/tdg/5.1/para.html),
+[`simpara`](https://tdg.docbook.org/tdg/5.1/simpara.html) -- Simple paragraphs may not contain other &block-level:Block elements& elements, and
+[`formalpara`](https://tdg.docbook.org/tdg/5.1/formalpara.html) -- formal paragraphs have titles.
+
+An example of a standard `<para>`
+```
+<para>The component suffered from three failings:
+<itemizedlist>
+<listitem><para>It was slow</para></listitem>
+<listitem><para>It ran hot</para></listitem>
+<listitem><para>It didn't actually work</para></listitem>
+</itemizedlist>
+Of these three, the last was probably the most important.
+</para>
+```
+
+Example of a `<simpara>`
+`<simpara>Just the text, ma'am.</simpara>`
+
+Example of a `<formalpara>`
+```none
+<formalpara><title>A Test</title>
+	<para>This is a test.  This is only a test.  Had this been a real
+	example, it would have made more sense.
+	</para>
+</formalpara>
+```
+
+See: https://tdg.docbook.org/tdg/5.1/para.html
+
+Section: Lists
+What:
+Lists are &Block elements& used to display list data
+
+How:
+There are eight list elements in DocBook:
+
+[`calloutlist`](https://tdg.docbook.org/tdg/5.1/calloutlist.html) A list of  [`callout`](https://tdg.docbook.org/tdg/5.1/callout.html)s and their descriptions. The  [`callout`](https://tdg.docbook.org/tdg/5.1/callout.html)s are marks, frequently  numbered  and typically on a graphic ([`imageobjectco`](https://tdg.docbook.org/tdg/5.1/imageobjectco.html)) or verbatim environment ([`programlistingco`](https://tdg.docbook.org/tdg/5.1/programlistingco.html)  or  [`screenco`](https://tdg.docbook.org/tdg/5.1/screenco.html)), that are described in a  [`calloutlist`](https://tdg.docbook.org/tdg/5.1/calloutlist.html).  
+[`bibliolist`](https://tdg.docbook.org/tdg/5.1/bibliolist.html) A list of bibliography entries ([`biblioentry`](https://tdg.docbook.org/tdg/5.1/biblioentry.html)  or  [`bibliomixed`](https://tdg.docbook.org/tdg/5.1/bibliomixed.html)  elements).
+[`glosslist`](https://tdg.docbook.org/tdg/5.1/glosslist.html) A list of glossary terms and their definitions.  
+[`itemizedlist`](https://tdg.docbook.org/tdg/5.1/itemizedlist.html) An unordered (bulleted) list. There are attributes to control the marks used.  
+[`orderedlist`](https://tdg.docbook.org/tdg/5.1/orderedlist.html) A numbered list. There are attributes to control the type of enumeration.
+[`segmentedlist`](https://tdg.docbook.org/tdg/5.1/segmentedlist.html) A repeating set of named items. For example, a list of states and their capitals might be represented as a  [`segmentedlist`](https://tdg.docbook.org/tdg/5.1/segmentedlist.html). Segmented lists consist of  [`segtitle`](https://tdg.docbook.org/tdg/5.1/segtitle.html)s,  [`seglistitem`](https://tdg.docbook.org/tdg/5.1/seglistitem.html)s, and  [`seg`](https://tdg.docbook.org/tdg/5.1/seg.html)s.  
+[`simplelist`](https://tdg.docbook.org/tdg/5.1/simplelist.html) An unadorned list of items.  [`simplelist`](https://tdg.docbook.org/tdg/5.1/simplelist.html)s can be inline or arranged in columns.  
+[`variablelist`](https://tdg.docbook.org/tdg/5.1/variablelist.html) A list of terms and definitions or descriptions. (This list of list types is a  [`variablelist`](https://tdg.docbook.org/tdg/5.1/variablelist.html).)  
+
+
+Section: Admonitions
+What:
+Admonitions are &Block elements& used to point out important aside info/notes your reader may need to know about information in your book
+
+How:
+All of the admonitions have the same structure: an optional [`title`](https://tdg.docbook.org/tdg/5.1/title.html) followed by &Paragraph-level:Paragraphs& elements.
+
+There are five types of admonitions in DocBook: 
+[`caution`](https://tdg.docbook.org/tdg/5.1/caution.html),  
+[`important`](https://tdg.docbook.org/tdg/5.1/important.html),  
+[`note`](https://tdg.docbook.org/tdg/5.1/note.html),  
+[`tip`](https://tdg.docbook.org/tdg/5.1/tip.html), and  
+[`warning`](https://tdg.docbook.org/tdg/5.1/warning.html).  
+
+
+Section: Line-specific environments
+What:
+Line-specific environments are &Block elements& which preserve the whitespace/link breaks of their content
+
+How:
+The following are line-specific environment elements
+
+[`address`](https://tdg.docbook.org/tdg/5.1/address.html) -- The  [`address`](https://tdg.docbook.org/tdg/5.1/address.html)  element is intended for postal addresses. In addition to being line-specific,  [`address`](https://tdg.docbook.org/tdg/5.1/address.html)  contains additional elements suitable for marking up names and addresses:  [`city`](https://tdg.docbook.org/tdg/5.1/city.html),  [`country`](https://tdg.docbook.org/tdg/5.1/country.html),  [`fax`](https://tdg.docbook.org/tdg/5.1/fax.html),[`otheraddr`](https://tdg.docbook.org/tdg/5.1/otheraddr.html),  [`personname`](https://tdg.docbook.org/tdg/5.1/personname.html),  [`phone`](https://tdg.docbook.org/tdg/5.1/phone.html),  [`pob`](https://tdg.docbook.org/tdg/5.1/pob.html),  [`postcode`](https://tdg.docbook.org/tdg/5.1/postcode.html),  [`state`](https://tdg.docbook.org/tdg/5.1/state.html), and  [`street`](https://tdg.docbook.org/tdg/5.1/street.html).
+
+---
+[`literallayout`](https://tdg.docbook.org/tdg/5.1/literallayout.html)
+A  [`literallayout`](https://tdg.docbook.org/tdg/5.1/literallayout.html)  does not have any semantic association beyond the preservation of whitespace and line breaks. In particular, while  [`programlisting`](https://tdg.docbook.org/tdg/5.1/programlisting.html)  and  [`screen`](https://tdg.docbook.org/tdg/5.1/screen.html)  are frequently presented in a fixed-width font, a change of fonts is not ordinarily  implied  by  [`literallayout`](https://tdg.docbook.org/tdg/5.1/literallayout.html).
+
+---
+[`programlisting`](https://tdg.docbook.org/tdg/5.1/programlisting.html)  and  [`programlistingco`](https://tdg.docbook.org/tdg/5.1/programlistingco.html)
+The  [`programlisting`](https://tdg.docbook.org/tdg/5.1/programlisting.html)  and  [`programlistingco`](https://tdg.docbook.org/tdg/5.1/programlistingco.html)  elements are verbatim environments, usually presented in Courier or some other fixed-width font, for program sources, code fragments, and similar listings. The two elements are the same, except that  [`programlistingco`](https://tdg.docbook.org/tdg/5.1/programlistingco.html)  supports markup for callouts.
+
+---
+[`screen`](https://tdg.docbook.org/tdg/5.1/screen.html)  and  [`screenco`](https://tdg.docbook.org/tdg/5.1/screenco.html) -- The  [`screen`](https://tdg.docbook.org/tdg/5.1/screen.html)  and  [`screenco`](https://tdg.docbook.org/tdg/5.1/screenco.html)  elements are verbatim or literal environments for text screen captures, other fragments of an  ASCII  display, and similar things.  [`screen`](https://tdg.docbook.org/tdg/5.1/screen.html)  is also a frequent catchall for any verbatim text. The two elements are the same, except that  [`screenco`](https://tdg.docbook.org/tdg/5.1/screenco.html)  supports markup for callouts.
+
+---
+[`screenshot`](https://tdg.docbook.org/tdg/5.1/screenshot.html) -- [`screenshot`](https://tdg.docbook.org/tdg/5.1/screenshot.html) is actually a wrapper for a  [`mediaobject`](https://tdg.docbook.org/tdg/5.1/mediaobject.html)  intended for screenshots of a  GUI, for example.
+
+---
+[`synopsis`](https://tdg.docbook.org/tdg/5.1/synopsis.html) -- A  [`synopsis`](https://tdg.docbook.org/tdg/5.1/synopsis.html)  is a verbatim environment for command and function synopses.
+
+
+Section: Examples, figures, and tables
+What:
+These are &Block elements& used to display examples, figures and tables.
+
+How:
+Examples, figures, and tables are supported with the block-level elements: [`example`](https://tdg.docbook.org/tdg/5.1/example.html), [`informalexample`](https://tdg.docbook.org/tdg/5.1/informalexample.html), [`figure`](https://tdg.docbook.org/tdg/5.1/figure.html), [`informalfigure`](https://tdg.docbook.org/tdg/5.1/informalfigure.html), [`table`](https://tdg.docbook.org/tdg/5.1/html.table.html), and [`informaltable`](https://tdg.docbook.org/tdg/5.1/html.informaltable.html).
+
+DocBook supports CALS tables (defined with [`tgroup`](https://tdg.docbook.org/tdg/5.1/tgroup.html), [`colspec`](https://tdg.docbook.org/tdg/5.1/colspec.html), [`spanspec`](https://tdg.docbook.org/tdg/5.1/spanspec.html), [`thead`](https://tdg.docbook.org/tdg/5.1/html.thead.html), [`tfoot`](https://tdg.docbook.org/tdg/5.1/html.tfoot.html), [`tbody`](https://tdg.docbook.org/tdg/5.1/html.tbody.html), [`row`](https://tdg.docbook.org/tdg/5.1/row.html), [`entry`](https://tdg.docbook.org/tdg/5.1/entry.html), [`entrytbl`](https://tdg.docbook.org/tdg/5.1/entrytbl.html), and [`caption`](https://tdg.docbook.org/tdg/5.1/caption.html)) and HTML tables (defined with [`col`](https://tdg.docbook.org/tdg/5.1/html.col.html), [`colgroup`](https://tdg.docbook.org/tdg/5.1/html.colgroup.html), [`thead`](https://tdg.docbook.org/tdg/5.1/html.thead.html), [`tfoot`](https://tdg.docbook.org/tdg/5.1/html.tfoot.html), [`tbody`](https://tdg.docbook.org/tdg/5.1/html.tbody.html), [`tr`](https://tdg.docbook.org/tdg/5.1/html.tr.html), [`td`](https://tdg.docbook.org/tdg/5.1/html.td.html), and [`caption`](https://tdg.docbook.org/tdg/5.1/caption.html)).
+
+
+Section: Equations
+What:
+Equations are &Block elements& used for math/science equations
+
+How:
+There are two block-equation elements:
+
+[`equation`](https://tdg.docbook.org/tdg/5.1/equation.html) and 
+[`informalequation`](https://tdg.docbook.org/tdg/5.1/informalequation.html) (for inline equations, use [`inlineequation`](https://tdg.docbook.org/tdg/5.1/inlineequation.html)).  
+
+
+Section: Graphics and media
+What:
+Graphics and media are &Block elements& used to display media content. They are typically used within &Figures:Examples, figures, and tables&, but can also be used stand-alone
+
+How:
+Media objects (and inline media objects) can contain five kinds of content:
+
+[`audioobject`](https://tdg.docbook.org/tdg/5.1/audioobject.html) -- A wrapper for audio data and its associated meta-information. (Which contains  [`audiodata`](https://tdg.docbook.org/tdg/5.1/audiodata.html).)  
+[`imageobject`](https://tdg.docbook.org/tdg/5.1/imageobject.html) -- A wrapper for image data and its associated meta-information. (Which contains  [`imagedata`](https://tdg.docbook.org/tdg/5.1/imagedata.html).)  
+[`imageobjectco`](https://tdg.docbook.org/tdg/5.1/imageobjectco.html) -- A wrapper for an image object with callouts. (Which contains  [`imagedata`](https://tdg.docbook.org/tdg/5.1/imagedata.html)  and  callout-related  information).  
+[`videoobject`](https://tdg.docbook.org/tdg/5.1/videoobject.html) -- A wrapper for video data and its associated meta-information. (Which contains  [`videodata`](https://tdg.docbook.org/tdg/5.1/videodata.html).)  
+[`textobject`](https://tdg.docbook.org/tdg/5.1/textobject.html) -- A wrapper for a text description of an object and its associated meta-information. (Which contains  [`textdata`](https://tdg.docbook.org/tdg/5.1/textdata.html).)  
+
+The audio, image, video, and text data in a media object are, by definition, alternatives.
+
+
+Section: Questions and answers
+What:
+These are &Block elements& used for FAQ style content. 
+
+How:
+The [`qandaset`](https://tdg.docbook.org/tdg/5.1/qandaset.html) element is suitable for FAQs (Frequently Asked Questions) and other similar collections of questions and answers. Each [`qandaentry`](https://tdg.docbook.org/tdg/5.1/qandaentry.html) contains a [`question`](https://tdg.docbook.org/tdg/5.1/question.html) and its [`answer`](https://tdg.docbook.org/tdg/5.1/answer.html)(s). The set of questions and answers can be divided into sections with [`qandadiv`](https://tdg.docbook.org/tdg/5.1/qandadiv.html).
+
+
+Section: Procedures and tasks
+What:
+These are &Block elements& used for content which outlines steps to complete a task.
+
+How:
+A  [`procedure`](https://tdg.docbook.org/tdg/5.1/procedure.html)  contains  [`step`](https://tdg.docbook.org/tdg/5.1/step.html)s, which may contain  [`substeps`](https://tdg.docbook.org/tdg/5.1/substeps.html)  or  [`stepalternatives`](https://tdg.docbook.org/tdg/5.1/stepalternatives.html).
+
+The  [`task`](https://tdg.docbook.org/tdg/5.1/task.html)  element is a wrapper around the  [`procedure`](https://tdg.docbook.org/tdg/5.1/procedure.html)  element that provides additional, optional elements, including  [`tasksummary`](https://tdg.docbook.org/tdg/5.1/tasksummary.html),  [`taskprerequisites`](https://tdg.docbook.org/tdg/5.1/taskprerequisites.html),  [`example`](https://tdg.docbook.org/tdg/5.1/example.html), and  [`taskrelated`](https://tdg.docbook.org/tdg/5.1/taskrelated.html).  
+
+
+Section: Synopses
+What:
+&Block elements& used for describing command, function, and class synopses
+
+How:
+[`cmdsynopsis`](https://tdg.docbook.org/tdg/5.1/cmdsynopsis.html) -- A syntax summary for a software command. A  [`cmdsynopsis`](https://tdg.docbook.org/tdg/5.1/cmdsynopsis.html)  contains  [`arg`](https://tdg.docbook.org/tdg/5.1/arg.html),  [`command`](https://tdg.docbook.org/tdg/5.1/command.html), and  [`group`](https://tdg.docbook.org/tdg/5.1/group.html)  elements. For long synopses, the  [`sbr`](https://tdg.docbook.org/tdg/5.1/sbr.html)  tag can be used to indicate where a break should occur. Complex synopses can be composed from  [`synopfragment`](https://tdg.docbook.org/tdg/5.1/synopfragment.html)s.  
+[`funcsynopsis`](https://tdg.docbook.org/tdg/5.1/funcsynopsis.html) -- The syntax summary for a function definition. A function synopsis consists of one or more  [`funcprototype`](https://tdg.docbook.org/tdg/5.1/funcprototype.html)s and may include additional, literal information in a  [`funcsynopsisinfo`](https://tdg.docbook.org/tdg/5.1/funcsynopsisinfo.html). Each prototype consists of  [`modifier`](https://tdg.docbook.org/tdg/5.1/modifier.html)s, a  [`funcdef`](https://tdg.docbook.org/tdg/5.1/funcdef.html), and a collection of  [`paramdef`](https://tdg.docbook.org/tdg/5.1/paramdef.html),  [`varargs`](https://tdg.docbook.org/tdg/5.1/varargs.html), and/or  [`void`](https://tdg.docbook.org/tdg/5.1/void.html)  elements.  
+[`classsynopsis`](https://tdg.docbook.org/tdg/5.1/classsynopsis.html) -- The syntax summary for a class definition. A class synopsis consists of one or more  [`ooclass`](https://tdg.docbook.org/tdg/5.1/ooclass.html),  [`ooexception`](https://tdg.docbook.org/tdg/5.1/ooexception.html), or  [`oointerface`](https://tdg.docbook.org/tdg/5.1/oointerface.html)  elements followed by zero or more  [`constructorsynopsis`](https://tdg.docbook.org/tdg/5.1/constructorsynopsis.html),[`destructorsynopsis`](https://tdg.docbook.org/tdg/5.1/destructorsynopsis.html),  [`fieldsynopsis`](https://tdg.docbook.org/tdg/5.1/fieldsynopsis.html), and  [`methodsynopsis`](https://tdg.docbook.org/tdg/5.1/methodsynopsis.html)  elements Like  [`funcsynopsis`](https://tdg.docbook.org/tdg/5.1/funcsynopsis.html), it may include additional, literal information, in this case, in a  [`classsynopsisinfo`](https://tdg.docbook.org/tdg/5.1/classsynopsisinfo.html).
+
+
+Section: Miscellaneous block elements
+What:
+The following block elements are also available:
+[`blockquote`](https://tdg.docbook.org/tdg/5.1/blockquote.html) -- A block quotation. Block quotations may have  [`attribution`](https://tdg.docbook.org/tdg/5.1/attribution.html)s.  
+[`epigraph`](https://tdg.docbook.org/tdg/5.1/epigraph.html) -- A short introduction, typically a quotation, at the beginning of a document or component. The  [`epigraph`](https://tdg.docbook.org/tdg/5.1/epigraph.html)  element may include an  [`attribution`](https://tdg.docbook.org/tdg/5.1/attribution.html)  element.  
+[`msgset`](https://tdg.docbook.org/tdg/5.1/msgset.html) -- A set of related error messages.  
+[`sidebar`](https://tdg.docbook.org/tdg/5.1/sidebar.html) -- A sidebar.  
+
+
+Section: Inline elements
+What: 
+Inline elements are used to change the appearance of your writing content, e.g: *italics, underline, bold, subscripts, etc*
+
+How:
+Inline elements are broken into the following categories:
+1. &Traditional publishing inlines&
+2. &Cross-references and linking&
+3. &Markup&
+4. &Mathematics inlines&
+5. &User interfaces&
+6. &Programming languages&
+7. &Operating systems&
+8. &General purpose&
+
+
+Section: Traditional publishing inlines
+What: 
+Traditional publishing inlines identify things that commonly occur in general writing
+
+How:
+The following traditional inlines are available:
+
+[`abbrev`](https://tdg.docbook.org/tdg/5.1/abbrev.html) -- An abbreviation, especially one followed by a period.  
+[`acronym`](https://tdg.docbook.org/tdg/5.1/acronym.html) -- An often pronounceable word made from the initial (or selected) letters of a name or phrase.  
+[`emphasis`](https://tdg.docbook.org/tdg/5.1/emphasis.html) -- Emphasized text.  
+[`footnote`](https://tdg.docbook.org/tdg/5.1/footnote.html) -- A footnote. The location of the  [`footnote`](https://tdg.docbook.org/tdg/5.1/footnote.html)  element identifies the location of the first reference to the footnote. Additional references to the same footnote can be inserted with  [`footnoteref`](https://tdg.docbook.org/tdg/5.1/footnoteref.html).  
+[`phrase`](https://tdg.docbook.org/tdg/5.1/phrase.html) -- A span of text.  
+[`quote`](https://tdg.docbook.org/tdg/5.1/quote.html) -- An inline quotation.  
+[`trademark`](https://tdg.docbook.org/tdg/5.1/trademark.html) -- A trademark.  
+
+
+Section: Cross-references and linking
+What:
+Cross-references and linking inlines are used to reference other content, either within the book itself, or external references. 
+> The cross-reference inlines identify both explicit cross-references and links (e.g., [`link`](https://tdg.docbook.org/tdg/5.1/link.html) and [`xref`](https://tdg.docbook.org/tdg/5.1/xref.html)) and implicit cross-references (e.g., [`citation`](https://tdg.docbook.org/tdg/5.1/citation.html) and [`glossterm`](https://tdg.docbook.org/tdg/5.1/glossterm.html)).
+
+How:
+The following cross-references and link inlines are available:
+
+[`anchor`](https://tdg.docbook.org/tdg/5.1/anchor.html) -- A spot in the document.  
+[`biblioref`](https://tdg.docbook.org/tdg/5.1/biblioref.html) -- A cross-reference to a bibliographic entry.  
+[`citation`](https://tdg.docbook.org/tdg/5.1/citation.html) -- An inline bibliographic reference to another published work.  
+[`citerefentry`](https://tdg.docbook.org/tdg/5.1/citerefentry.html) -- A citation to a reference page.  
+[`citetitle`](https://tdg.docbook.org/tdg/5.1/citetitle.html) -- The title of a cited work.  
+[`firstterm`](https://tdg.docbook.org/tdg/5.1/firstterm.html) -- The first occurrence of a term.  
+[`glossterm`](https://tdg.docbook.org/tdg/5.1/glossterm.html) -- A glossary term.  
+[`link`](https://tdg.docbook.org/tdg/5.1/link.html) -- A hypertext link.  
+[`olink`](https://tdg.docbook.org/tdg/5.1/olink.html) -- A link that addresses its target indirectly.  
+[`xref`](https://tdg.docbook.org/tdg/5.1/xref.html) -- A cross reference to another part of the document.  
+
+Examples:
+```
+Link to <link linkend="s.inline.xref">the current</link> section.
+Link to <xref linkend="s.inline.xref"/>.
+
+Link to the <link xlink:href="http://docbook.org/">DocBook</link> website.
+Link to <link xlink:href="#s.inline.xref">this section</link>.
+```
+
+
+Section: Markup
+What:
+Markup inlines are used to mark up text for special presentation
+
+How:
+Markup inlines available:
+[`foreignphrase`](https://tdg.docbook.org/tdg/5.1/foreignphrase.html) -- A word or phrase in a language other than the primary language of the document  
+[`wordasword`](https://tdg.docbook.org/tdg/5.1/wordasword.html) -- A word meant specifically as a word and not representing anything else  
+[`computeroutput`](https://tdg.docbook.org/tdg/5.1/computeroutput.html) -- Data, generally text, displayed or presented by a computer  
+[`literal`](https://tdg.docbook.org/tdg/5.1/literal.html) -- Inline text that is some literal value  
+[`markup`](https://tdg.docbook.org/tdg/5.1/markup.html) -- A string of formatting markup in text that is to be represented literally  
+[`prompt`](https://tdg.docbook.org/tdg/5.1/prompt.html) -- A character or string indicating the start of an input field in a computer display  
+[`replaceable`](https://tdg.docbook.org/tdg/5.1/replaceable.html) -- Content that may or must be replaced by the user  
+[`tag`](https://tdg.docbook.org/tdg/5.1/tag.html) -- A component of XML (or SGML) markup  
+[`userinput`](https://tdg.docbook.org/tdg/5.1/userinput.html) -- Data entered by the user  
+
+Section: Mathematics inlines
+What:
+Mathematics inlines are used for displaying equations. MathML markup may be used in any of the equation elements
+
+How:
+[`inlineequation`](https://tdg.docbook.org/tdg/5.1/inlineequation.html) -- A mathematical equation or expression occurring inline  
+[`mathphrase`](https://tdg.docbook.org/tdg/5.1/mathphrase.html) -- A mathematical phrase that can be represented with ordinary text and a small amount of markup  
+[`subscript`](https://tdg.docbook.org/tdg/5.1/subscript.html) -- A subscript (as in H2O, the molecular formula for water)  
+[`superscript`](https://tdg.docbook.org/tdg/5.1/superscript.html) -- A superscript (as in x2, the mathematical notation for x multiplied by itself)  
+
+
+Section: User interfaces
+What:
+These elements describe aspects of a user interface
+
+How:
+The User interface inlines are available:
+[`accel`](https://tdg.docbook.org/tdg/5.1/accel.html) -- A graphical user interface (GUI) keyboard shortcut  
+[`guibutton`](https://tdg.docbook.org/tdg/5.1/guibutton.html) -- The text on a button in a GUI  
+[`guiicon`](https://tdg.docbook.org/tdg/5.1/guiicon.html) -- A graphic and/or text appearing as an icon in a GUI  
+[`guilabel`](https://tdg.docbook.org/tdg/5.1/guilabel.html) -- The text of a label in a GUI  
+[`guimenu`](https://tdg.docbook.org/tdg/5.1/guimenu.html) -- The name of a menu in a GUI  
+[`guimenuitem`](https://tdg.docbook.org/tdg/5.1/guimenuitem.html) -- The name of a terminal menu item in a GUI  
+[`guisubmenu`](https://tdg.docbook.org/tdg/5.1/guisubmenu.html) -- The name of a submenu in a GUI  
+[`keycap`](https://tdg.docbook.org/tdg/5.1/keycap.html) -- The text printed on a key on a keyboard  
+[`keycode`](https://tdg.docbook.org/tdg/5.1/keycode.html) -- The internal, frequently numeric, identifier for a key on a keyboard  
+[`keycombo`](https://tdg.docbook.org/tdg/5.1/keycombo.html) -- A combination of input actions  
+[`keysym`](https://tdg.docbook.org/tdg/5.1/keysym.html) -- The symbolic name of a key on a keyboard  
+[`menuchoice`](https://tdg.docbook.org/tdg/5.1/menuchoice.html) -- A selection or series of selections from a menu  
+[`mousebutton`](https://tdg.docbook.org/tdg/5.1/mousebutton.html) -- The conventional name of a mouse button  
+[`shortcut`](https://tdg.docbook.org/tdg/5.1/shortcut.html) -- A key combination for an action that is also accessible through a menu  
+
+
+Section: Programming languages
+What:
+These inlines are used to display text related to programming
+
+How:
+[`classname`](https://tdg.docbook.org/tdg/5.1/classname.html) -- The name of a class, in the object-oriented programming sense  
+[`constant`](https://tdg.docbook.org/tdg/5.1/constant.html) -- A programming or system constant  
+[`errorcode`](https://tdg.docbook.org/tdg/5.1/errorcode.html) -- An error code  
+[`errorname`](https://tdg.docbook.org/tdg/5.1/errorname.html) -- An error name  
+[`errortype`](https://tdg.docbook.org/tdg/5.1/errortype.html) -- The classification of an error message  
+[`function`](https://tdg.docbook.org/tdg/5.1/function.html) -- The name of a function or subroutine, as in a programming language  
+[`literal`](https://tdg.docbook.org/tdg/5.1/literal.html) -- Inline text that is some literal value  
+[`msgtext`](https://tdg.docbook.org/tdg/5.1/msgtext.html) -- The actual text of a message component in a message set  
+[`parameter`](https://tdg.docbook.org/tdg/5.1/parameter.html) -- A value or a symbolic reference to a value  
+[`property`](https://tdg.docbook.org/tdg/5.1/property.html) -- A unit of data associated with some part of a computer system  
+[`replaceable`](https://tdg.docbook.org/tdg/5.1/replaceable.html) -- Content that may or must be replaced by the user  
+[`returnvalue`](https://tdg.docbook.org/tdg/5.1/returnvalue.html) -- The value returned by a function  
+[`symbol`](https://tdg.docbook.org/tdg/5.1/symbol.html) -- A name that is replaced by a value before processing  
+[`token`](https://tdg.docbook.org/tdg/5.1/token.html) -- A unit of information  
+[`type`](https://tdg.docbook.org/tdg/5.1/type.html) -- The classification of a value   
+[`varname`](https://tdg.docbook.org/tdg/5.1/varname.html) -- The name of a variable  
+
+Section: Operating systems
+What:
+These inlines identify parts of an operating system, or an operating environment
+
+How:
+[`application`](https://tdg.docbook.org/tdg/5.1/application.html) -- The name of a software program  
+[`command`](https://tdg.docbook.org/tdg/5.1/command.html) -- The name of an executable program or other software command  
+[`envar`](https://tdg.docbook.org/tdg/5.1/envar.html) -- A software environment variable  
+[`filename`](https://tdg.docbook.org/tdg/5.1/filename.html) -- The name of a file  
+[`msgtext`](https://tdg.docbook.org/tdg/5.1/msgtext.html) -- The actual text of a message component in a message set  
+[`option`](https://tdg.docbook.org/tdg/5.1/option.html) -- An option for a software command  
+[`parameter`](https://tdg.docbook.org/tdg/5.1/parameter.html) -- A value or a symbolic reference to a value  
+[`prompt`](https://tdg.docbook.org/tdg/5.1/prompt.html) -- A character or string indicating the start of an input field in a computer display  
+[`systemitem`](https://tdg.docbook.org/tdg/5.1/systemitem.html) -- A system-related item or term  
+
+Section: General purpose
+What:
+These are general-purpose technical inlines:
+
+[`application`](https://tdg.docbook.org/tdg/5.1/application.html) -- The name of a software program  
+[`database`](https://tdg.docbook.org/tdg/5.1/database.html) -- The name of a database, or part of a database  
+[`email`](https://tdg.docbook.org/tdg/5.1/email.html) -- An email address  
+[`filename`](https://tdg.docbook.org/tdg/5.1/filename.html) -- The name of a file  
+[`hardware`](https://tdg.docbook.org/tdg/5.1/hardware.html) -- A physical part of a computer system  
+[`literal`](https://tdg.docbook.org/tdg/5.1/literal.html) -- Inline text that is some literal value  
+[`option`](https://tdg.docbook.org/tdg/5.1/option.html) -- An option for a software command  
+[`optional`](https://tdg.docbook.org/tdg/5.1/optional.html) -- Optional information  
+[`replaceable`](https://tdg.docbook.org/tdg/5.1/replaceable.html) --Content that may or must be replaced by the user  
+[`symbol`](https://tdg.docbook.org/tdg/5.1/symbol.html) -- A name that is replaced by a value before processing  
+[`token`](https://tdg.docbook.org/tdg/5.1/token.html) -- A unit of information  
+[`type`](https://tdg.docbook.org/tdg/5.1/type.html) -- The classification of a value  

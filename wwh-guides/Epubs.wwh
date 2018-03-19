@@ -1,0 +1,194 @@
+
+Section: Epubs
+What:
+Epubs are a format for creating books which can be viewed on many devices.
+
+Why:
+Epubs provide a flexible way to create books which support font scaling and reformatting.
+
+How:
+- Epubs are nothing but a website packaged in a zip archive with the .epub extension
+- The main pages are constructed using xhtml files for the pages, and css files for styles
+- The brains of epubs is the &Package Document& -- this document controls all aspects of how the book is put together. Epubs may contain multiple package documents. They use .opf extension
+- &container.xml:Container Xml& is a file which tells the ereader where it can locate the &Package Document&. *container.xml* is a required document and goes in the META-INF directory of the epub archive.
+- Epubs require a MimeType document which contain nothing but the the following: `application/epub+zip`
+
+
+Section: Container Xml
+What: 
+container.xml is a document which tells the ereader where to find &package documents:Package Document&
+
+How:
+container.xml must go in the META-INF directory of the epub archive.
+
+Below follows an example of a container.xml file:
+If the package document is called *package.opf* and is located in the folder CONTENT in the archive, then the location will be “CONTENT/package.opf”.
+```
+<?xml version="1.0" encoding="UTF-8" ?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+	<rootfiles>
+		<rootfile full-path="CONTENT/package.opf" media-type="application/oebps-package+xml"/>
+	</rootfiles
+</container>
+```
+
+container.xml can reference many different *Package Documents*, which will each contain different *renditions* of the book
+
+Section: Package Document
+What: 
+Package documents are the brains of epub books using the file extension .opf
+
+How:
+Package documents contain and require three main sections of information which tell the book how it goes together. These are:
+
+1. &Metadata:Package Document Metadata& -- This contains information about the epub, such as the title, creator, language, etc. It is __required__ to be the __first__ child element in it's &Package Document&
+2. A &Manifest:Package Document Manifest& -- The complete set of all resources the needed to create a rendition of the book
+3. &Spine Items& -- These defines the reading order of each chapter/publication of the book. They can defined in a linear book-like order, or they can be sub-sections of other spine items
+
+An example package document:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" xmlns:opf="http://www.idpf.org/2007/opf" version="3.1" xml:lang="en" unique-identifier="pub-id">
+
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<dc:title id="title">Moby-Dick</dc:title>
+	<dc:creator id="creator" opf:file-as="Melville, Herman">Herman Melville</dc:creator>
+	<dc:identifier id="pub-id">idpf.epub31.samples.moby-dick.xhtml</dc:identifier>
+	<dc:language>en-US</dc:language>
+	<meta property="dcterms:modified">2016-02-05T14:40:00Z</meta>
+	<dc:publisher>Harper \&amp; Brothers, Publishers</dc:publisher>
+	<dc:contributor opf:role="mrk">Dave Cramer</dc:contributor>
+
+	<!--MEDIA OVERLAY METADATA-->
+	<meta property="media:duration">0:23:23.500</meta>
+	<meta property="media:narrator">Stuart Wills</meta>
+	<meta property="media:active-class">-epub-media-overlay-active</meta>
+</metadata>
+
+<manifest>
+	<item id="font.stix.regular" href="fonts/STIXGeneral.otf" media-type="application/vnd.ms-opentype"/>
+	<item id="font.stix.italic" href="fonts/STIXGeneralItalic.otf" media-type="application/vnd.ms-opentype"/>
+	<item id="font.stix.bold" href="fonts/STIXGeneralBol.otf" media-type="application/vnd.ms-opentype"/>
+	<item id="font.stix.bold.italic" href="fonts/STIXGeneralBolIta.otf" media-type="application/vnd.ms-opentype"/>
+	<item id="chapter\_001\_overlay" href="chapter\_001\_overlay.smil" duration="0:14:20.500" media-type="application/smil+xml"/>
+	<item id="chapter\_002\_overlay" href="chapter\_002\_overlay.smil" duration="0:09:03.000" media-type="application/smil+xml"/>
+	<item id="chapter\_001\_audio" href="audio/mobydick\_001\_002_melville.mp4" media-type="audio/mp4"/>
+	<item id="cover-image" properties="cover-image" href="images/9780316000000.jpg" media-type="image/jpeg"/>
+	<item id="style" href="css/stylesheet.css" media-type="text/css"/>
+	<item id="toc" properties="nav" href="toc.xhtml" media-type="application/xhtml+xml"/>
+	<item id="copyright" href="copyright.xhtml" media-type="application/xhtml+xml"/>
+	<item id="titlepage" href="titlepage.xhtml" media-type="application/xhtml+xml"/>
+	<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>
+	<item id="aMoby-Dick\_FE\_title\_page" href="images/Moby-Dick\_FE\_title\_page.jpg" media-type="image/jpeg"/>
+	<item id="xpreface\_001" href="preface\_001.xhtml" media-type="application/xhtml+xml"/>
+	<item id="xintroduction\_001" href="introduction\_001.xhtml" media-type="application/xhtml+xml"/>
+	<item id="xepigraph\_001" href="epigraph\_001.xhtml" media-type="application/xhtml+xml"/>
+	<item id="xchapter\_001" href="chapter\_001.xhtml" media-type="application/xhtml+xml" media-overlay="chapter\_001\_overlay"/>
+	<item id="xchapter\_002" href="chapter\_002.xhtml" media-type="application/xhtml+xml" media-overlay="chapter\_002\_overlay"/>
+	<item id="xchapter\_003" href="chapter\_003.xhtml" media-type="application/xhtml+xml"/>
+	<item id="xchapter\_004" href="chapter\_004.xhtml" media-type="application/xhtml+xml"/>
+	<item id="brief-toc" href="toc-short.xhtml" media-type="application/xhtml+xml"/>
+</manifest>
+
+<spine>
+	<itemref idref="cover" linear="no"/>
+	<itemref idref="titlepage" linear="yes"/>
+	<itemref idref="brief-toc" linear="yes"/>
+	<itemref linear="yes" idref="xpreface_001"/>
+	<itemref linear="yes" idref="xintroduction_001"/>
+	<itemref linear="yes" idref="xepigraph_001"/>
+	<itemref linear="yes" idref="xchapter_001"/>
+	<itemref linear="yes" idref="xchapter_002"/>
+	<itemref linear="yes" idref="xchapter_003"/>
+	<itemref linear="yes" idref="xchapter_004"/>
+	<itemref idref="copyright" linear="yes"/>
+	<itemref idref="toc" linear="no"/>
+</spine>
+</package>
+```
+
+
+Section: Package Document Metadata
+What: 
+The Metadata of an epub contains information about that epub, such as title, creator, and language.
+Metadata is required to be the first child element in it's &Package Document&
+
+How:
+Epub metadata requires atleast the following fields to be present:
+_title, identifier, language_ and _modified_. 
+
+All other fields are optional. For a complete list of metadata fields, see
+- http://www.idpf.org/epub/31/spec/epub-packages.html#sec-metadata-elem
+- http://www.idpf.org/epub/31/spec/epub-packages.html#sec-opf-dcmes-optional
+
+Metadata is given using either the `<dc:..>` element or the `<meta property=..>` 
+An example metadata section
+```
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<dc:title id="title">Moby-Dick</dc:title>
+	<dc:creator id="creator" opf:file-as="Melville, Herman">Herman Melville</dc:creator>
+	<dc:identifier id="pub-id">idpf.epub31.samples.moby-dick.xhtml</dc:identifier>
+	<dc:language>en-US</dc:language>
+	<meta property="dcterms:modified">2016-02-05T14:40:00Z</meta>
+	<dc:publisher>Harper \&amp; Brothers, Publishers</dc:publisher>
+	<dc:contributor opf:role="mrk">Dave Cramer</dc:contributor>
+
+	<!--MEDIA OVERLAY METADATA-->
+	<meta property="media:duration">0:23:23.500</meta>
+	<meta property="media:narrator">Stuart Wills</meta>
+	<meta property="media:active-class">-epub-media-overlay-active</meta>
+</metadata>
+```
+
+Section: Package Document Manifest
+What:
+The manifest gives a complete set of all resources (html pages, images, fonts, audio) that the epub will use to create it's chapters/publications. Manifest is required to be the second child element in the &Package Document&, coming after &the metadata:Package Document Metadata&
+
+How:
+Each manifest resource is listed in an `<item>` element. Manifest items have three primary required fields
+1. id -- this is a unique identifier for this element
+2. href -- this is a reference to where the resource is located in the epub archive
+3. media-type -- A media type that specifies the type and format of the Publication Resource
+
+For complete info on manifest items, see: https://www.idpf.org/epub/30/spec/epub30-publications.html#sec-item-elem
+
+The manifest is particularly important to list off each of the chapters of your book/web-pages of the publication
+
+An example manifest:
+```
+<!-- Some Fonts -->
+<item id="font.stix.regular" href="fonts/STIXGeneral.otf" media-type="application/vnd.ms-opentype"/>
+<item id="font.stix.italic" href="fonts/STIXGeneralItalic.otf" media-type="application/vnd.ms-opentype"/>
+<item id="font.stix.bold" href="fonts/STIXGeneralBol.otf" media-type="application/vnd.ms-opentype"/>
+<item id="font.stix.bold.italic" href="fonts/STIXGeneralBolIta.otf" media-type="application/vnd.ms-opentype"/>
+
+<!-- Media overlays -->
+<item id="chapter\_001\_overlay" href="chapter\_001\_overlay.smil" duration="0:14:20.500" media-type="application/smil+xml"/>
+<item id="chapter\_002\_overlay" href="chapter\_002\_overlay.smil" duration="0:09:03.000" media-type="application/smil+xml"/>
+
+<!-- Audio-->
+<item id="chapter\_001\_audio" href="audio/mobydick\_001\_002_melville.mp4" media-type="audio/mp4"/>
+
+<item id="cover-image" properties="cover-image" href="images/9780316000000.jpg" media-type="image/jpeg"/>
+
+<item id="style" href="css/stylesheet.css" media-type="text/css"/>
+<item id="toc" properties="nav" href="toc.xhtml" media-type="application/xhtml+xml"/>
+
+<!-- Actual pages within the book-->
+<item id="titlepage" href="titlepage.xhtml" media-type="application/xhtml+xml"/>
+<item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>
+<item id="aMoby-Dick\_FE\_title\_page" href="images/Moby-Dick\_FE\_title\_page.jpg" media-type="image/jpeg"/>
+<item id="xpreface\_001" href="preface\_001.xhtml" media-type="application/xhtml+xml"/>
+<item id="xintroduction\_001" href="introduction\_001.xhtml" media-type="application/xhtml+xml"/>
+<item id="xchapter\_001" href="chapter\_001.xhtml" media-type="application/xhtml+xml" media-overlay="chapter\_001\_overlay"/>
+<item id="xchapter\_002" href="chapter\_002.xhtml" media-type="application/xhtml+xml" media-overlay="chapter\_002\_overlay"/>
+<item id="xchapter\_003" href="chapter\_003.xhtml" media-type="application/xhtml+xml"/>
+```
+
+Section: Spine Items
+What: Empty
+
+
+Section: Toc Ncx
+What: 
+Toc.ncx was used in epub 2.0 as a navigation document. It is now deprecated, replaced by &package documents:Package Document&
