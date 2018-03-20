@@ -3,6 +3,10 @@ Section: DocBooks
 What:
 Doc books are a sort of universal format for drafting ebooks. It is basically the html of ebooks, its written in xml.
 
+Note: 
+If any of the following terms are unfamiliar to you:  
+`html, xml, xml-tag/entry, xml-attribute, epub, markdown` -- See the &Pre-Requisites:What is markup& section to clear things up
+
 Why:
 DocBooks provide a way to draft ebooks which can be converted to multiple formats without the need to change the code. Formats it can convert to include: html, epub, markdown, pdf, and more
 
@@ -585,3 +589,76 @@ These are general-purpose technical inlines:
 [`symbol`](https://tdg.docbook.org/tdg/5.1/symbol.html) -- A name that is replaced by a value before processing  
 [`token`](https://tdg.docbook.org/tdg/5.1/token.html) -- A unit of information  
 [`type`](https://tdg.docbook.org/tdg/5.1/type.html) -- The classification of a value  
+
+
+---
+Section: What is markup
+What:
+Markup is a sort of language for describing the structure of documents. One of the most widely-known markup languages is HTML -- used to create web pages.
+
+How:
+The rules for writing markup are very simple. We use *tags/entries/elements* (these names are used interchangably) to identify a *section* and content of a document. &Tags& are like parenthesys, they have an opening  '(' and a closing ')', typically with text between them, as in `<Name>Jake Jorborn</Name>`
+
+Here's an example of an html document -- this is markup in action
+```
+<html>
+	<h1>Im a header</h1>
+	<p>Heres some text here</p>
+</html>
+```
+
+See &Tags& for more info on how tags work
+
+Xml -  
+Xml is a form of markup. See &Xml& for more info
+
+Markdown -  
+Markdown is a shorthand for html, because, having to write `<>` brakets all the time can become tiresome.
+In html, a header may be defined in a section like so: `<h1>My Header</h1>`
+
+In markdown, a header is defined using `#` symbols followed by the text as in: `# My Header`
+This shorthand makes writing stylized documents much easier.
+
+Epub -  
+Epub is a format of ebook, used on amazon kindle, google play books, etc. It has resizable and reflowable text, making it easier to view on many devices. 
+
+
+Section: Tags
+What:
+Tags are used to identify a section of a &Markup:What is markup& document.
+
+How:
+Tags have an opening and a closing with text in between, similar to parenthesys: '(' and ')'. 
+
+- A tag is opened using the name of a *section* between arrow brakets, e.g: `<MyName>`.  
+- A tag is closed in the same way, but with a '/' before the name, e.g: `</MyName>`.  
+- Lastly, if the tag has no content, there's a shorthand to open and close the tag at the same time, e.g: `<MyName/>`
+
+A full tag example using the html section 'p': `<p>Heres some info</p>`
+
+Tags can also have attributes -- A tag attribute is the ability to add extra information to a markup tag. 
+e.g:  
+If we want a tag to not be visible, we may set its visible attribute to false like so:
+`<Name visible='false'>John Doe</Name>`
+
+As you can see, attributes are specified after the section name, within the `<>` brakets.
+
+
+Section: Xml
+What:
+Xml stands for Extensible Markup Language. It is a &Markup:What is markup& language. 
+
+How:
+Users of xml define the sections they want their document to have, and then these documents can be written to save information.
+
+e.g: If we wanted to save info about a person -- their name, date of birth, and gender. The following xml could be used
+```
+<Person>
+	<Name>
+		<Last>Parker</Last>
+		<First>Peter</First>
+		<Middle/>
+	<DOB>05/07/2001</DOB>
+	<Gender>M</Gender>
+</Person>
+```
